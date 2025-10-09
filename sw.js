@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'mgmt-pad-v7';  // ←更新時は番号を上げる
+const CACHE_NAME = 'mgmt-pad-v8';  // ←更新時は番号を上げる
 const APP_SHELL = [
   './',                // ルート
   './index.html',
