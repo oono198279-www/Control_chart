@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'mgmt-pad-v4';  // ←更新時は番号を上げる
+const CACHE_NAME = 'mgmt-pad-v5';  // ←更新時は番号を上げる
 const APP_SHELL = [
   '/',                // ルート
   '/index.html',
@@ -7,8 +7,6 @@ const APP_SHELL = [
   '/sw.js',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  '/icons/icon-192-maskable.png',
-  '/icons/icon-512-maskable.png'
   // 必要ならCSS/JSを分離している場合に追加
 ];
 
