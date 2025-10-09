@@ -1,8 +1,8 @@
 {
   "name": "管理図（テンキー入力）",
   "short_name": "管理図",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#eeeeee",
   "theme_color": "#777777",
