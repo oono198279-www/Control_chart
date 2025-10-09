@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>管理図</title>
+<style>
+  :root{ --w:860px }
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Yu Gothic UI","Hiragino Kaku Gothic ProN",sans-serif;
+        margin:0;background:#eee;padding-top:calc(56px + env(safe-area-inset-top));}
+  .fixedBtn{position:fixed;top:calc(8px + env(safe-area-inset-top));z-index:100;padding:10px 16px;border:none;border-radius:8px;
+            background:#777;color:#fff;font-weight:700;box-shadow:0 2px 0 #555;touch-action:manipulation;}
+  #saveBtn{left:calc(8px + env(safe-area-inset-left));}
+  #resetBtn{right:calc(8px + env(safe-area-inset-right));}
+  .box{margin:10px;background:#fff;border:2px solid #666;border-radius:8px;box-shadow:0 2px 0 #bbb;padding:8px}
+  table{border-collapse:collapse;width:100%;max-width:var(--w);table-layout:fixed}
+  th,td{border:1px solid #444;padding:6px}
+  th{background:#f0f0f0;text-align:center}
+  td.no{width:6.5ch;text-align:center;background:#fafafa;font-weight:600}
+  td.head1{background:#fafafa;font-weight:700;text-align:center}
+  td.cell{min-height:28px;text-align:left;background:#ffff99}
+  tr.header td{background:#fff}
+  td.calc{background:#fff;text-align:left}
+  .sel{outline:3px solid #00a050; outline-offset:-3px}
+  .pad{position:fixed;left:0;right:0;bottom:0;background:#888;padding:8px;border-top:2px solid #666;z-index:10}
+  .padgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:var(--w);margin:0 auto}
+  .pad button{height:48px;border:none;border-radius:10px;background:#b7b362;color:#fff;font-size:1.05rem;font-weight:700;
+              box-shadow:inset 0 -2px 0 rgba(0,0,0,.25);touch-action:manipulation;}
+  .pad .gray{background:#6b6b6b}
+  .pad .tall{height:104px;grid-row:span 2}
+  .wrap{padding-bottom:260px}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.25);display:none;align-items:center;justify-content:center;z-index:20}
+  .dlg{background:#fff;border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.3);width:min(92%,420px)}
+  .dlg h2{margin:0 0 14px;font-size:1.2rem}
+  .dlg .row{display:flex;gap:12px}
+  .dlg button{flex:1 1 0;padding:12px;border:none;border-radius:12px;background:#777;color:#fff;font-weight:800;box-shadow:0 2px 0 #555}
+</style>
+</head>
+<body>
+
+<button id="saveBtn" class="fixedBtn">保存</button>
+<button id="resetBtn" class="fixedBtn">リセット</button>
+
+<div class="box wrap">
+  <table id="grid" aria-label="管理表">
+    <thead>
+      <tr>
+        <th>項目</th><th>ボール高さ</th><th>面径</th><th>面角度</th><th>面粗度</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="header">
+        <td class="head1">x̄</td>
+        <td class="calc"></td><td class="calc"></td><td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr class="header">
+        <td class="head1">R</td>
+        <td class="calc"></td><td class="calc"></td><td class="calc"></td><td class="calc"></td>
+      </tr>
+
+      <!-- 入力範囲（No.1〜No.7 × 4列）-->
+      <tr><td class="no">No.1</td><td class="cell" data-r="0" data-c="0"></td><td class="cell" data-r="0" data-c="1"></td><td class="cell" data-r="0" data-c="2"></td><td class="cell" data-r="0" data-c="3"></td></tr>
+      <tr><td class="no">No.2</td><td class="cell" data-r="1" data-c="0"></td><td class="cell" data-r="1" data-c="1"></td><td class="cell" data-r="1" data-c="2"></td><td class="cell" data-r="1" data-c="3"></td></tr>
+      <tr><td class="no">No.3</td><td class="cell" data-r="2" data-c="0"></td><td class="cell" data-r="2" data-c="1"></td><td class="cell" data-r="2" data-c="2"></td><td class="cell" data-r="2" data-c="3"></td></tr>
+      <tr><td class="no">No.4</td><td class="cell" data-r="3" data-c="0"></td><td class="cell" data-r="3" data-c="1"></td><td class="cell" data-r="3" data-c="2"></td><td class="cell" data-r="3" data-c="3"></td></tr>
+      <tr><td class="no">No.5</td><td class="cell" data-r="4" data-c="0"></td><td class="cell" data-r="4" data-c="1"></td><td class="cell" data-r="4" data-c="2"></td><td class="cell" data-r="4" data-c="3"></td></tr>
+      <tr><td class="no">No.6</td><td class="cell" data-r="5" data-c="0"></td><td class="cell" data-r="5" data-c="1"></td><td class="cell" data-r="5" data-c="2"></td><td class="cell" data-r="5" data-c="3"></td></tr>
+      <tr><td class="no">No.7</td><td class="cell" data-r="6" data-c="0"></td><td class="cell" data-r="6" data-c="1"></td><td class="cell" data-r="6" data-c="2"></td><td class="cell" data-r="6" data-c="3"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 専用テンキー -->
+<div class="pad">
+  <div class="padgrid">
+    <button data-act="up">↑</button>
+    <button data-act="down">↓</button>
+    <button data-act="left">←</button>
+    <button data-act="right">→</button>
+
+    <button data-val="7">7</button><button data-val="8">8</button><button data-val="9">9</button><button class="gray" data-act="bs">⌫</button>
+    <button data-val="4">4</button><button data-val="5">5</button><button data-val="6">6</button><button class="gray" data-act="tab">TAB</button>
+    <button data-val="1">1</button><button data-val="2">2</button><button data-val="3">3</button>
+    <button class="gray tall" data-act="enter" style="grid-column:4;grid-row:4 / span 2;">↩︎</button>
+    <button data-val="-">-</button><button data-val="0">0</button><button data-val=".">.</button>
+  </div>
+</div>
+
+<!-- モーダル -->
+<div id="saveModal" class="modal" role="dialog" aria-modal="true"><div class="dlg">
+  <h2>何を保存するんですか？</h2><div class="row"><button id="saveYes">値やて</button><button id="saveNo">はぁ？</button></div>
+</div></div>
+<div id="resetModal" class="modal" role="dialog" aria-modal="true"><div class="dlg">
+  <h2>本当にリセットしますか？</h2><div class="row"><button id="resetYes">ホンマやて</button><button id="resetNo">ウソやん♡</button></div>
+</div></div>
+
+<script>
+/* ========= 列ごとの固定小数桁設定 =========
+   例）[3, 2, 1, null] → 1列目は3桁, 2列目は2桁, 3列目は1桁, 4列目は #0.0##（可変）
+*/
+const DECIMALS_PER_COL = [3, 3, 1, 1];  // ←好きに変更OK
+
+/* ===== 便利関数 ===== */
+let lastTouchEnd=0;
+document.addEventListener('touchend',(e)=>{const now=Date.now();if(now-lastTouchEnd<=300){e.preventDefault();}lastTouchEnd=now;},{passive:false});
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+function getCell(r,c){return document.querySelector(`td.cell[data-r="${r}"][data-c="${c}"]`);}
+
+/* #0.0## ルール用 */
+function fmtFlexible(num){
+  if(!isFinite(num)) return "";
+  let s = Number(num).toFixed(4).replace(/\.?0+$/,'');
+  if(!s.includes('.')) s += '.0';
+  const d = (s.split('.')[1]||'').length;
+  return Number(num).toFixed(Math.min(3, Math.max(1, d)));
+}
+
+/* 列の設定に従って整形 */
+function formatByColumn(num, c){
+  const k = DECIMALS_PER_COL[c];
+  if(k==null) return fmtFlexible(num);      // 可変
+  return isFinite(num) ? Number(num).toFixed(k) : "";
+}
+
+/* ===== 表ロジック ===== */
+const R=7,C=4,KEY="mgmt-pad-fixeddec-v1";
+let cur={r:0,c:0};
+
+function scrollIntoViewIfNeeded(el){
+  const rect=el.getBoundingClientRect(), padBottom=260, vH=innerHeight;
+  if(rect.top<60) scrollBy({top:rect.top-60,behavior:'smooth'});
+  else if(rect.bottom>vH-padBottom) scrollBy({top:rect.bottom-(vH-padBottom),behavior:'smooth'});
+}
+function writeCell(r,c,fn){const td=getCell(r,c);if(!td)return;td.textContent=fn(td.textContent||"");calc();save();}
+
+/* 入力中は文字連結のみ（自動整形なし） */
+function put(ch){
+  const td=getCell(cur.r,cur.c); if(!td) return;
+  let s=td.textContent||"";
+  if(ch==='-'){ s = s.startsWith('-') ? s.slice(1) : '-' + s; }
+  else if(ch==='.') { if(!s.includes('.')) s = s==='' ? '0.' : s + '.'; }
+  else if(/[0-9]/.test(ch)){ s += ch; }
+  td.textContent = s;
+  calc(); save();
+}
+
+/* セル確定時に整形（列設定に従う） */
+function finalizeCell(r,c){
+  const td=getCell(r,c); if(!td) return;
+  const v=parseFloat(td.textContent);
+  if(!isNaN(v)) td.textContent = formatByColumn(v,c);
+}
+
+function focusCell(r,c){
+  finalizeCell(cur.r,cur.c);         // 今いるセルを整形してから
+  r=clamp(r,0,R-1); c=clamp(c,0,C-1); cur={r,c};
+  document.querySelectorAll('td.cell').forEach(td=>td.classList.remove('sel'));
+  const td=getCell(r,c); if(td){ td.classList.add('sel'); scrollIntoViewIfNeeded(td); }
+  calc(); save();
+}
+
+function move(dx,dy){ focusCell(cur.r+dy,cur.c+dx); }
+function enter(){ move(0,1); }
+function tab(){ if(cur.c<C-1) move(1,0); else focusCell(cur.r+1>R-1?0:cur.r+1,0); }
+function bs(){ writeCell(cur.r,cur.c,s=>s.slice(0,-1)); }
+
+/* 中央値 & R を計算し、列設定に従い整形表示 */
+function median(a){const b=[...a].sort((x,y)=>x-y);const n=b.length;if(n===0)return null;const m=Math.floor(n/2);return n%2?b[m]:(b[m-1]+b[m])/2;}
+function calc(){
+  for(let c=0;c<C;c++){
+    const col=[...Array(R)].map((_,r)=>parseFloat(getCell(r,c).textContent)).filter(v=>!isNaN(v));
+    const med=median(col);
+    const rng=col.length? Math.max(...col)-Math.min(...col) : null;
+    const xCell=document.querySelectorAll('tr.header .calc')[c];
+    const rCell=document.querySelectorAll('tr.header + tr.header .calc')[c];
+    xCell.textContent = (med==null? "": formatByColumn(med,c));
+    rCell.textContent = (rng==null? "": formatByColumn(rng,c));
+  }
+}
+
+/* 保存/復元 */
+function getMatrix(){
+  const M=[...Array(R)].map(()=>Array(C).fill(""));
+  for(let r=0;r<R;r++) for(let c=0;c<C;c++) M[r][c]=getCell(r,c).textContent;
+  return M;
+}
+function setMatrix(M){ for(let r=0;r<R;r++) for(let c=0;c<C;c++) getCell(r,c).textContent=M?.[r]?.[c]??""; }
+function save(){ localStorage.setItem(KEY, JSON.stringify(getMatrix())); }
+function load(){ try{const M=JSON.parse(localStorage.getItem(KEY)||""); if(M) setMatrix(M);}catch(e){} calc(); }
+
+/* クリックで選択 */
+document.querySelectorAll('td.cell').forEach(td=>{
+  td.addEventListener('click', ()=> focusCell(parseInt(td.dataset.r,10), parseInt(td.dataset.c,10)));
+});
+
+/* パッド割当 */
+document.querySelectorAll('.pad button').forEach(b=>{
+  const act=b.dataset.act, val=b.dataset.val;
+  if(act){
+    b.addEventListener('click',()=>{
+      if(act==='up') move(0,-1);
+      if(act==='down') move(0, 1);
+      if(act==='left') move(-1,0);
+      if(act==='right') move( 1,0);
+      if(act==='bs') bs();
+      if(act==='tab') tab();
+      if(act==='enter') enter();
+    });
+  }else if(val){
+    b.addEventListener('click',()=>put(val));
+  }
+});
+
+/* モーダル系 */
+const saveModal=document.getElementById('saveModal');
+const resetModal=document.getElementById('resetModal');
+document.getElementById('saveBtn').onclick = ()=> saveModal.style.display='flex';
+document.getElementById('resetBtn').onclick= ()=> resetModal.style.display='flex';
+document.getElementById('saveNo').onclick  = ()=> saveModal.style.display='none';
+document.getElementById('resetNo').onclick = ()=> resetModal.style.display='none';
+document.getElementById('saveYes').onclick = ()=>{ save(); saveModal.style.display='none'; };
+document.getElementById('resetYes').onclick= ()=>{
+  for(let r=0;r<R;r++) for(let c=0;c<C;c++) getCell(r,c).textContent="";
+  resetModal.style.display='none'; calc(); save();
+};
+
+/* 初期表示 */
+load(); focusCell(0,0);
+</script>
+</body>
+</html>
