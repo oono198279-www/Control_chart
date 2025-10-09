@@ -109,7 +109,7 @@
   <h2>何を保存するんですか？</h2><div class="row"><button id="saveYes">値だが</button><button id="saveNo">はぁ？</button></div>
 </div></div>
 <div id="resetModal" class="modal"><div class="dlg">
-  <h2>本当にリセットしますか？</h2><div class="row"><button id="resetYes">本当だが</button><button id="resetNo">ウソだが</button></div>
+  <h2>本当にリセットしますか？</h2><div class="row"><button id="resetYes">本当だが</button><button id="resetNo">はぁ？</button></div>
 </div></div>
 
 <script>
@@ -118,9 +118,9 @@ const C=4,R=7;
 const KEY_VALUES="mgmt-values-v2";
 const KEY_SETTINGS="mgmt-settings-v2";
 const DEFAULT_SETTINGS={
-  headers:["ボール高さ","面径","面角度","面粗度"],
-  decimals:[null,3,3,3], // null=可変
-  limits:[0.05,0.1,0.1,0.1]
+  headers:["項目①","項目②","項目③","項目④"],
+  decimals:[null,1,2,3], // null=可変
+  limits:[0.1,0.1,0.1,0.1]
 };
 
 function el(q){return document.querySelector(q);}
