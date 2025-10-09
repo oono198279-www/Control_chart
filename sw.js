@@ -1,12 +1,12 @@
 // sw.js
 const CACHE_NAME = 'mgmt-pad-v6';  // ←更新時は番号を上げる
 const APP_SHELL = [
-  '/',                // ルート
-  '/index.html',
-  '/manifest.webmanifest',
-  '/sw.js',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
+  './',                // ルート
+  './index.html',
+  './manifest.webmanifest',
+  './sw.js',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
   // 必要ならCSS/JSを分離している場合に追加
 ];
 
