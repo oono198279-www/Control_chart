@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <link rel="manifest" href="./manifest.webmanifest">
+<link rel="manifest" href="./manifest.webmanifest">
 <meta name="theme-color" content="#777777">
 
 <!-- iOS保険 -->
@@ -35,9 +35,15 @@
   .sel{outline:3px solid #00a050; outline-offset:-3px}
 
   .pad{position:fixed;left:0;right:0;bottom:0;background:#888;padding:8px 8px 80px;border-top:2px solid #666;z-index:10}
-  .padgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:var(--w);margin:0 auto}
-  .pad button{height:48px;border:none;border-radius:10px;background:#b7b362;color:#fff;font-size:1.05rem;font-weight:700;
-              box-shadow:inset 0 -2px 0 rgba(0,0,0,.25);touch-action:none;-webkit-tap-highlight-color: transparent;}
+  .padgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:var(--w);margin:0 auto} /* gap広げて誤タップ低減 */
+  .pad button{
+    height:48px;border:none;border-radius:10px;background:#b7b362;color:#fff;font-size:1.05rem;font-weight:700;
+    box-shadow:inset 0 -2px 0 rgba(0,0,0,.25);
+    touch-action:none;-webkit-tap-highlight-color:transparent;
+    user-select:none;-webkit-user-select:none;
+    transition:transform .06s ease, filter .06s ease;
+  }
+  .pad button.fx-pressed, .pad button:active{ transform:scale(0.96); filter:brightness(0.9); }
   .pad .gray{background:#6b6b6b}
   .pad .tall{height:104px;grid-row:span 2}
   .wrap{padding-bottom:260px}
@@ -63,11 +69,11 @@
     <thead>
       <tr id="headerRow">
         <th>項目</th>
-        <th>ボール高さ</th><th>面径</th><th>面角度</th><th>面粗度</th>
+        <th>項目①</th><th>項目②</th><th>項目③</th><th>項目④</th>
       </tr>
     </thead>
     <tbody id="gridBody">
-      <!-- ここはJSで生成します -->
+      <!-- JSで入力行を生成 -->
       <tr class="header">
         <td class="head1">x̄</td>
         <td class="calc"></td><td class="calc"></td><td class="calc"></td><td class="calc"></td>
@@ -122,10 +128,9 @@ const DEFAULT_SETTINGS={
   decimals:[null,1,2,3], // null=可変
   limits:[0.1,0.1,0.1,0.1]
 };
-
 function el(q){return document.querySelector(q);}
 
-/* ===== 行をJSで生成（崩れ対策の本丸） ===== */
+/* ===== 入力行をJSで生成 ===== */
 (function buildRows(){
   const tb = el('#gridBody');
   for(let i=0;i<R;i++){
@@ -180,19 +185,62 @@ function setMatrix(M){for(let r=0;r<R;r++)for(let c=0;c<C;c++)getCell(r,c).textC
 function saveValues(){localStorage.setItem(KEY_VALUES,JSON.stringify(getMatrix()));}
 function loadValues(){try{setMatrix(JSON.parse(localStorage.getItem(KEY_VALUES)||""));}catch{}calc();}
 
-/* ===== クリック選択 & パッド ===== */
+/* ===== 触覚（擬似）フィードバック ===== */
+const feedback = (() => {
+  let ctx;
+  const ensure = () => { if (!ctx) ctx = new (window.AudioContext||window.webkitAudioContext)(); return ctx; };
+  const click = () => {
+    const a = ensure();
+    const o = a.createOscillator();
+    const g = a.createGain();
+    o.type = 'square'; o.frequency.value = 180;
+    g.gain.setValueAtTime(0.001, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.00001, a.currentTime + 0.03);
+    o.connect(g).connect(a.destination);
+    o.start(); o.stop(a.currentTime + 0.03);
+  };
+  const flash = (el) => { if (!el) return; el.classList.add('fx-pressed'); setTimeout(()=>el.classList.remove('fx-pressed'), 80); };
+  return (el) => { if (navigator.vibrate) navigator.vibrate(10); else click(); flash(el); };
+})();
+
+/* ===== パッド割当（1タップ=1回だけ処理） ===== */
+const pressLock = new WeakSet();
+function bindPadButton(b){
+  const act=b.dataset.act, val=b.dataset.val;
+
+  const onDown = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (pressLock.has(b)) return;      // 二重発火・連打防止
+    pressLock.add(b);
+
+    feedback(b);                       // 押下フィードバック
+
+    if(act){
+      if(act==='up') move(0,-1);
+      if(act==='down') move(0, 1);
+      if(act==='left') move(-1,0);
+      if(act==='right') move( 1,0);
+      if(act==='bs') bs();
+      if(act==='tab') tab();
+      if(act==='enter') enter();
+    }else if(val){
+      put(val);
+    }
+  };
+  const onUp = () => { pressLock.delete(b); };
+
+  b.addEventListener('pointerdown', onDown, {passive:false});
+  b.addEventListener('pointerup', onUp);
+  b.addEventListener('pointercancel', onUp);
+  // 互換click無効化（iOSの二重発火を確実に止める）
+  b.addEventListener('click', (e)=>e.preventDefault(), {passive:false});
+}
+
+/* ===== クリック選択 & パッド登録 ===== */
 document.querySelectorAll('td.cell').forEach(td=>{
   td.addEventListener('pointerdown',()=>focusCell(parseInt(td.dataset.r,10),parseInt(td.dataset.c,10)));
 });
-document.querySelectorAll('.pad button').forEach(b=>{
-  const act=b.dataset.act,val=b.dataset.val;
-  b.addEventListener('pointerdown',e=>{
-    e.preventDefault();
-    if(act){ if(act==='up')move(0,-1); if(act==='down')move(0,1); if(act==='left')move(-1,0); if(act==='right')move(1,0);
-             if(act==='bs')bs(); if(act==='tab')tab(); if(act==='enter')enter();}
-    else if(val){ put(val); }
-  });
-});
+document.querySelectorAll('.pad button').forEach(bindPadButton);
 
 /* ===== モーダル ===== */
 function openModal(m){m.style.display='flex';}function closeModal(m){m.style.display='none';}
@@ -236,7 +284,7 @@ document.getElementById('settingSave').onclick=()=>{
 /* ===== 初期化 ===== */
 loadValues(); updateHeaders(); focusCell(0,0);
 
-/* EdgeのローカルでもOKなよう相対パスで */
+/* PWA（相対パスで） */
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 }
