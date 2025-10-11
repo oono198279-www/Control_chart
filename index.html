@@ -36,13 +36,31 @@
 
   .pad{position:fixed;left:0;right:0;bottom:0;background:#888;padding:8px 8px 80px;border-top:2px solid #666;z-index:10}
   .padgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:var(--w);margin:0 auto} /* gap広げて誤タップ低減 */
-  .pad button{
-    height:48px;border:none;border-radius:10px;background:#b7b362;color:#fff;font-size:1.05rem;font-weight:700;
-    box-shadow:inset 0 -2px 0 rgba(0,0,0,.25);
-    touch-action:none;-webkit-tap-highlight-color:transparent;
-    user-select:none;-webkit-user-select:none;
-    transition:transform .06s ease, filter .06s ease;
+
+  /* 共通 */
+  .pad button {
+  height:48px;border:none;border-radius:10px;
+  color:#fff;font-size:1.05rem;font-weight:700;
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.25);
+  touch-action:none;-webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+  transition:transform .06s ease, filter .06s ease;}
+
+  /* 数字キー専用（色変更） */
+  .pad button.num {
+    background:#555555;   /* ←好きな色に変更OK */}
+
+  /* 矢印・機能キー */
+  .pad .gray { background:#EE7800; }
+
+  /* 矢印キー専用 */
+  .pad button[data-act="up"],
+  .pad button[data-act="down"],
+  .pad button[data-act="left"],
+  .pad button[data-act="right"] {
+    background:#EE7800;   /* ←暗くしたい色 */
   }
+
   .pad button.fx-pressed, .pad button:active{ transform:scale(0.96); filter:brightness(0.9); }
   .pad .gray{background:#6b6b6b}
   .pad .tall{height:104px;grid-row:span 2}
@@ -88,13 +106,31 @@
 
 <!-- 専用テンキー -->
 <div class="pad">
+
   <div class="padgrid">
-    <button data-act="up">↑</button><button data-act="down">↓</button><button data-act="left">←</button><button data-act="right">→</button>
-    <button data-val="7">7</button><button data-val="8">8</button><button data-val="9">9</button><button class="gray" data-act="bs">⌫</button>
-    <button data-val="4">4</button><button data-val="5">5</button><button data-val="6">6</button><button class="gray" data-act="tab">TAB</button>
-    <button data-val="1">1</button><button data-val="2">2</button><button data-val="3">3</button>
+    <button data-act="up">↑</button>
+    <button data-act="down">↓</button>
+    <button data-act="left">←</button>
+    <button data-act="right">→</button>
+  
+    <button class="num" data-val="7">7</button>
+    <button class="num" data-val="8">8</button>
+    <button class="num" data-val="9">9</button>
+    <button class="gray" data-act="bs">⌫</button>
+  
+    <button class="num" data-val="4">4</button>
+    <button class="num" data-val="5">5</button>
+    <button class="num" data-val="6">6</button>
+    <button class="gray" data-act="tab">TAB</button>
+  
+    <button class="num" data-val="1">1</button>
+    <button class="num" data-val="2">2</button>
+    <button class="num" data-val="3">3</button>
+  
     <button class="gray tall" data-act="enter" style="grid-column:4;grid-row:4 / span 2;">↩︎</button>
-    <button data-val="-">-</button><button data-val="0">0</button><button data-val=".">.</button>
+    <button class="num" data-val="-">-</button>
+    <button class="num" data-val="0">0</button>
+    <button class="num" data-val=".">.</button>
   </div>
 </div>
 
