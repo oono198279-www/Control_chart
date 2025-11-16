@@ -11,76 +11,235 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="./icons/icon-192.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+
 <title>管理図</title>
 <style>
   :root{ --w:860px }
-  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Yu Gothic UI","Hiragino Kaku Gothic ProN",sans-serif;
-        margin:0;background:#eee;padding-top:calc(56px + env(safe-area-inset-top));}
-  .fixedBtn{position:fixed;top:calc(8px + env(safe-area-inset-top));z-index:100;
-            padding:10px 16px;border:none;border-radius:8px;background:#777;color:#fff;
-            font-weight:700;box-shadow:0 2px 0 #555;touch-action:manipulation;}
-  #saveBtn{left:calc(8px + env(safe-area-inset-left));}
-  #settingBtn{left:50%;transform:translateX(-50%);}
-  #resetBtn{right:calc(8px + env(safe-area-inset-right));}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Yu Gothic UI","Hiragino Kaku Gothic ProN",sans-serif;
+    margin:0;
+    background:#eee;
+    /* 上部ツールバーぶんの余白 */
+    padding-top:calc(80px + env(safe-area-inset-top));
+  }
 
-  .box{margin:10px;background:#fff;border:2px solid #666;border-radius:8px;box-shadow:0 2px 0 #bbb;padding:8px}
-  table{border-collapse:collapse;width:100%;max-width:var(--w);table-layout:fixed}
-  th,td{border:1px solid #444;padding:6px}
-  th{background:#f0f0f0;text-align:center}
-  td.no{width:6.5ch;text-align:center;background:#fafafa;font-weight:600}
-  td.head1{background:#fafafa;font-weight:700;text-align:center}
-  td.cell{min-height:28px;text-align:left;background:#ffff99}
+  /* ── 上部ツールバー ─────────────────── */
+  .topBar{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    padding-top:calc(8px + env(safe-area-inset-top));
+    padding-left:calc(8px + env(safe-area-inset-left));
+    padding-right:calc(8px + env(safe-area-inset-right));
+    padding-bottom:8px;
+    background:#f5f5f5;
+    z-index:100;
+    box-shadow:0 2px 0 #ccc;
+  }
+  .topBarInner{
+    max-width:var(--w);
+    margin:0 auto;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .topBarInner button{
+    flex:1 1 0;
+    padding:10px 6px;
+    border:none;
+    border-radius:8px;
+    background:#777;
+    color:#fff;
+    font-weight:700;
+    font-size:.9rem;
+    box-shadow:0 2px 0 #555;
+    white-space:nowrap;
+  }
+
+  /* ── メイン ─────────────────────────── */
+  .box{
+    margin:10px;
+    background:#fff;
+    border:2px solid #666;
+    border-radius:8px;
+    box-shadow:0 2px 0 #bbb;
+    padding:8px;
+  }
+  table{
+    border-collapse:collapse;
+    width:100%;
+    max-width:var(--w);
+    table-layout:fixed;
+  }
+  th,td{
+    border:1px solid #444;
+    padding:6px;
+  }
+  th{
+    background:#f0f0f0;
+    text-align:center;
+  }
+  td.no{
+    width:6.5ch;
+    text-align:center;
+    background:#fafafa;
+    font-weight:600;
+  }
+  td.head1{
+    background:#fafafa;
+    font-weight:700;
+    text-align:center;
+  }
+  td.cell{
+    min-height:28px;
+    text-align:left;
+    background:#ffff99;
+  }
   tr.header td{background:#fff}
-  td.calc{background:#fff;text-align:left}
-  .sel{outline:3px solid #00a050; outline-offset:-3px}
+  td.calc{
+    background:#fff;
+    text-align:left;
+  }
+  .sel{
+    outline:3px solid #00a050;
+    outline-offset:-3px;
+  }
 
-  .pad{position:fixed;left:0;right:0;bottom:0;background:#888;padding:8px 8px 80px;border-top:2px solid #666;z-index:10}
-  .padgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:var(--w);margin:0 auto} /* gap広げて誤タップ低減 */
+  /* ── テンキー ───────────────────────── */
+  .pad{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    background:#888;
+    padding:8px 8px 80px;
+    border-top:2px solid #666;
+    z-index:10;
+  }
+  .padgrid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    max-width:var(--w);
+    margin:0 auto;
+  }
 
-  /* 共通 */
-  .pad button {
-  height:48px;border:none;border-radius:10px;
-  color:#fff;font-size:1.05rem;font-weight:700;
-  box-shadow:inset 0 -2px 0 rgba(0,0,0,.25);
-  touch-action:none;-webkit-tap-highlight-color:transparent;
-  user-select:none;-webkit-user-select:none;
-  transition:transform .06s ease, filter .06s ease;}
+  .pad button{
+    height:48px;
+    border:none;
+    border-radius:10px;
+    color:#fff;
+    font-size:1.05rem;
+    font-weight:700;
+    box-shadow:inset 0 -2px 0 rgba(0,0,0,.25);
+    touch-action:none;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
+    transition:transform .06s ease, filter .06s ease;
+  }
 
-  /* 数字キー専用（色変更） */
-  .pad button.num {
-    background:#555555;   /* ←好きな色に変更OK */}
+  /* 数字キー */
+  .pad button.num{
+    background:#555555;
+  }
 
   /* 矢印・機能キー */
-  .pad .gray { background:#EE7800; }
+  .pad .gray{
+    background:#6b6b6b;
+  }
 
-  /* 矢印キー専用 */
+  /* 矢印キー専用（少し目立たせる） */
   .pad button[data-act="up"],
   .pad button[data-act="down"],
   .pad button[data-act="left"],
-  .pad button[data-act="right"] {
-    background:#EE7800;   /* ←暗くしたい色 */
+  .pad button[data-act="right"]{
+    background:#EE7800;
   }
 
-  .pad button.fx-pressed, .pad button:active{ transform:scale(0.96); filter:brightness(0.9); }
-  .pad .gray{background:#6b6b6b}
-  .pad .tall{height:104px;grid-row:span 2}
+  .pad button.fx-pressed,
+  .pad button:active{
+    transform:scale(0.96);
+    filter:brightness(0.9);
+  }
+
+  .pad .tall{
+    height:104px;
+    grid-row:span 2;
+  }
   .wrap{padding-bottom:260px}
 
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.25);display:none;align-items:center;justify-content:center;z-index:20}
-  .dlg{background:#fff;border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.3);width:min(92%,460px);max-height:90vh;overflow-y:auto;}
-  .dlg h2{margin:0 0 14px;font-size:1.2rem;text-align:center}
-  .dlg label{display:block;margin-top:10px;font-weight:600}
-  .dlg input, .dlg select{width:100%;padding:8px;border:1px solid #999;border-radius:6px;margin-top:4px}
-  .dlg .row{display:flex;gap:12px;margin-top:18px}
-  .dlg button{flex:1 1 0;padding:12px;border:none;border-radius:12px;background:#777;color:#fff;font-weight:800;box-shadow:0 2px 0 #555}
-  .r-alert{color:red;font-weight:700}
+  /* ── モーダル ───────────────────────── */
+  .modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.25);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:20;
+  }
+  .dlg{
+    background:#fff;
+    border-radius:16px;
+    padding:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+    width:min(92%,460px);
+    max-height:90vh;
+    overflow-y:auto;
+  }
+  .dlg h2{
+    margin:0 0 14px;
+    font-size:1.2rem;
+    text-align:center;
+  }
+  .dlg label{
+    display:block;
+    margin-top:10px;
+    font-weight:600;
+  }
+  .dlg input,
+  .dlg select{
+    width:100%;
+    padding:8px;
+    border:1px solid #999;
+    border-radius:6px;
+    margin-top:4px;
+  }
+  .dlg .row{
+    display:flex;
+    gap:12px;
+    margin-top:18px;
+  }
+  .dlg button{
+    flex:1 1 0;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:#777;
+    color:#fff;
+    font-weight:800;
+    box-shadow:0 2px 0 #555;
+  }
+  .r-alert{
+    color:red;
+    font-weight:700;
+  }
 </style>
 </head>
 <body>
 
-<button id="saveBtn" class="fixedBtn">保存</button>
-<button id="settingBtn" class="fixedBtn">設定</button>
-<button id="resetBtn" class="fixedBtn">リセット</button>
+<!-- 上部ボタンバー -->
+<div class="topBar">
+  <div class="topBarInner">
+    <button id="exportJsonBtn">設定をJSONで保存</button>
+    <button id="importJsonBtn">JSONから復元</button>
+    <button id="settingBtn">設定</button>
+    <button id="resetBtn">リセット</button>
+    <input type="file" id="jsonFileInput" accept="application/json" style="display:none">
+  </div>
+</div>
 
 <div class="box wrap">
   <table id="grid" aria-label="管理表">
@@ -91,7 +250,7 @@
       </tr>
     </thead>
     <tbody id="gridBody">
-      <!-- JSで入力行を生成 -->
+      <!-- JSでNo.1〜7を生成 -->
       <tr class="header">
         <td class="head1">x̄</td>
         <td class="calc"></td><td class="calc"></td><td class="calc"></td><td class="calc"></td>
@@ -106,27 +265,26 @@
 
 <!-- 専用テンキー -->
 <div class="pad">
-
   <div class="padgrid">
     <button data-act="up">↑</button>
     <button data-act="down">↓</button>
     <button data-act="left">←</button>
     <button data-act="right">→</button>
-  
+
     <button class="num" data-val="7">7</button>
     <button class="num" data-val="8">8</button>
     <button class="num" data-val="9">9</button>
     <button class="gray" data-act="bs">⌫</button>
-  
+
     <button class="num" data-val="4">4</button>
     <button class="num" data-val="5">5</button>
     <button class="num" data-val="6">6</button>
     <button class="gray" data-act="tab">TAB</button>
-  
+
     <button class="num" data-val="1">1</button>
     <button class="num" data-val="2">2</button>
     <button class="num" data-val="3">3</button>
-  
+
     <button class="gray tall" data-act="enter" style="grid-column:4;grid-row:4 / span 2;">↩︎</button>
     <button class="num" data-val="-">-</button>
     <button class="num" data-val="0">0</button>
@@ -146,50 +304,68 @@
   </div>
 </div>
 
-<!-- 他モーダル -->
-<div id="saveModal" class="modal"><div class="dlg">
-  <h2>本当に保存しますか？</h2><div class="row"><button id="saveYes">はい</button><button id="saveNo">はぁ？</button></div>
-</div></div>
-<div id="resetModal" class="modal"><div class="dlg">
-  <h2>本当にリセットしますか？</h2><div class="row"><button id="resetYes">はい</button><button id="resetNo">はぁ？</button></div>
-</div></div>
+<!-- リセット確認モーダル -->
+<div id="resetModal" class="modal">
+  <div class="dlg">
+    <h2>本当にリセットしますか？</h2>
+    <div class="row">
+      <button id="resetYes">はい</button>
+      <button id="resetNo">はぁ？</button>
+    </div>
+  </div>
+</div>
 
 <script>
-/* ===== 定数と初期設定 ===== */
+/* ===== 定数とキー ===== */
 const C=4,R=7;
 const KEY_VALUES="mgmt-values-v2";
 const KEY_SETTINGS="mgmt-settings-v2";
+const BACKUP_VERSION=1;
 const DEFAULT_SETTINGS={
   headers:["項目①","項目②","項目③","項目④"],
-  decimals:[null,1,2,3], // null=可変
+  decimals:[null,1,2,3],   // null=可変
   limits:[0.1,0.1,0.1,0.1]
 };
 function el(q){return document.querySelector(q);}
 
-/* ===== 入力行をJSで生成 ===== */
+/* ===== No.1〜7行を生成 ===== */
 (function buildRows(){
-  const tb = el('#gridBody');
+  const tb=el('#gridBody');
   for(let i=0;i<R;i++){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td class="no">No.${i+1}</td>` +
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="no">No.${i+1}</td>` +
       Array.from({length:C},(_,c)=>`<td class="cell" data-r="${i}" data-c="${c}"></td>`).join('');
     tb.appendChild(tr);
   }
 })();
 
-/* ===== 設定 ===== */
+/* ===== 設定ロード ===== */
 let settings=JSON.parse(localStorage.getItem(KEY_SETTINGS)||"null")||DEFAULT_SETTINGS;
 function saveSettings(){localStorage.setItem(KEY_SETTINGS,JSON.stringify(settings));}
 
-/* ===== 便利関数・整形 ===== */
+/* ===== 便利関数 ===== */
 function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
 function getCell(r,c){return document.querySelector(`td.cell[data-r="${r}"][data-c="${c}"]`);}
 function median(a){const b=[...a].sort((x,y)=>x-y);const n=b.length;if(!n)return null;const m=Math.floor(n/2);return n%2?b[m]:(b[m-1]+b[m])/2;}
-function fmtFlexible(num){if(!isFinite(num))return"";let s=Number(num).toFixed(4).replace(/\.?0+$/,'');if(!s.includes('.'))s+='.0';const d=(s.split('.')[1]||'').length;return Number(num).toFixed(Math.min(3,Math.max(1,d))); }
-function formatByColumn(num,c){const k=settings.decimals[c];return k==null?fmtFlexible(num): (isFinite(num)?Number(num).toFixed(k):"");}
+function fmtFlexible(num){
+  if(!isFinite(num))return"";
+  let s=Number(num).toFixed(4).replace(/\.?0+$/,'');
+  if(!s.includes('.'))s+='.0';
+  const d=(s.split('.')[1]||'').length;
+  return Number(num).toFixed(Math.min(3,Math.max(1,d)));
+}
+function formatByColumn(num,c){
+  const k=settings.decimals[c];
+  return k==null?fmtFlexible(num):(isFinite(num)?Number(num).toFixed(k):"");
+}
 
 /* ===== 表示更新 ===== */
-function updateHeaders(){const ths=document.querySelectorAll('#headerRow th');for(let i=0;i<C;i++){ths[i+1].textContent=settings.headers[i];}}
+function updateHeaders(){
+  const ths=document.querySelectorAll('#headerRow th');
+  for(let i=0;i<C;i++){
+    ths[i+1].textContent=settings.headers[i];
+  }
+}
 function calc(){
   for(let c=0;c<C;c++){
     const col=[...Array(R)].map((_,r)=>parseFloat(getCell(r,c).textContent)).filter(v=>!isNaN(v));
@@ -203,92 +379,153 @@ function calc(){
   }
 }
 
-/* ===== 入力 ===== */
+/* ===== 入力操作 ===== */
 let cur={r:0,c:0};
-function focusCell(r,c){r=clamp(r,0,R-1);c=clamp(c,0,C-1);
+function focusCell(r,c){
+  r=clamp(r,0,R-1);
+  c=clamp(c,0,C-1);
   document.querySelectorAll('td.cell').forEach(td=>td.classList.remove('sel'));
-  const td=getCell(r,c);if(td){td.classList.add('sel');td.scrollIntoView({block:"nearest"});}cur={r,c};
+  const td=getCell(r,c);
+  if(td){
+    td.classList.add('sel');
+    td.scrollIntoView({block:"nearest"});
+  }
+  cur={r,c};
 }
-function put(ch){const td=getCell(cur.r,cur.c);if(!td)return;let s=td.textContent||"";if(ch==='-'){s=s.startsWith('-')?s.slice(1):'-'+s;}else if(ch==='.') {if(!s.includes('.'))s=s===''?'0.':s+'.';}else if(/[0-9]/.test(ch)){s+=ch;}td.textContent=s;calc();saveValues();}
-function bs(){const td=getCell(cur.r,cur.c);if(!td)return;td.textContent=td.textContent.slice(0,-1);calc();saveValues();}
+function put(ch){
+  const td=getCell(cur.r,cur.c);
+  if(!td)return;
+  let s=td.textContent||"";
+  if(ch==='-'){
+    s=s.startsWith('-')?s.slice(1):'-'+s;
+  }else if(ch==='.'){
+    if(!s.includes('.'))s=s===''?'0.':s+'.';
+  }else if(/[0-9]/.test(ch)){
+    s+=ch;
+  }
+  td.textContent=s;
+  calc();
+  saveValues();
+}
+function bs(){
+  const td=getCell(cur.r,cur.c);
+  if(!td)return;
+  td.textContent=td.textContent.slice(0,-1);
+  calc();
+  saveValues();
+}
 function move(dx,dy){focusCell(cur.r+dy,cur.c+dx);}
 function enter(){move(0,1);}
-function tab(){if(cur.c<C-1)move(1,0);else focusCell(cur.r+1>R-1?0:cur.r+1,0);}
+function tab(){
+  if(cur.c<C-1)move(1,0);
+  else focusCell(cur.r+1>R-1?0:cur.r+1,0);
+}
 
-/* ===== 保存/復元 ===== */
-function getMatrix(){return[...Array(R)].map((_,r)=>[...Array(C)].map((_,c)=>getCell(r,c).textContent));}
-function setMatrix(M){for(let r=0;r<R;r++)for(let c=0;c<C;c++)getCell(r,c).textContent=M?.[r]?.[c]??"";}
-function saveValues(){localStorage.setItem(KEY_VALUES,JSON.stringify(getMatrix()));}
-function loadValues(){try{setMatrix(JSON.parse(localStorage.getItem(KEY_VALUES)||""));}catch{}calc();}
+/* ===== localStorage保存/復元 ===== */
+function getMatrix(){
+  return[...Array(R)].map((_,r)=>[...Array(C)].map((_,c)=>getCell(r,c).textContent));
+}
+function setMatrix(M){
+  for(let r=0;r<R;r++)
+    for(let c=0;c<C;c++)
+      getCell(r,c).textContent=M?.[r]?.[c]??"";
+}
+function saveValues(){
+  localStorage.setItem(KEY_VALUES,JSON.stringify(getMatrix()));
+}
+function loadValues(){
+  try{
+    setMatrix(JSON.parse(localStorage.getItem(KEY_VALUES)||""));
+  }catch{}
+  calc();
+}
 
-/* ===== 触覚（擬似）フィードバック ===== */
-const feedback = (() => {
+/* ===== 疑似ハプティック ＋ ボタン制御 ===== */
+const feedback=(()=>{
   let ctx;
-  const ensure = () => { if (!ctx) ctx = new (window.AudioContext||window.webkitAudioContext)(); return ctx; };
-  const click = () => {
-    const a = ensure();
-    const o = a.createOscillator();
-    const g = a.createGain();
-    o.type = 'square'; o.frequency.value = 180;
-    g.gain.setValueAtTime(0.001, a.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.00001, a.currentTime + 0.03);
-    o.connect(g).connect(a.destination);
-    o.start(); o.stop(a.currentTime + 0.03);
+  const ensure=()=>{
+    if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();
+    return ctx;
   };
-  const flash = (el) => { if (!el) return; el.classList.add('fx-pressed'); setTimeout(()=>el.classList.remove('fx-pressed'), 80); };
-  return (el) => { if (navigator.vibrate) navigator.vibrate(10); else click(); flash(el); };
+  const click=()=>{
+    const a=ensure();
+    const o=a.createOscillator();
+    const g=a.createGain();
+    o.type='square';
+    o.frequency.value=180;
+    g.gain.setValueAtTime(0.001,a.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.00001,a.currentTime+0.03);
+    o.connect(g).connect(a.destination);
+    o.start();
+    o.stop(a.currentTime+0.03);
+  };
+  const flash=el=>{
+    if(!el)return;
+    el.classList.add('fx-pressed');
+    setTimeout(()=>el.classList.remove('fx-pressed'),80);
+  };
+  return el=>{
+    if(navigator.vibrate)navigator.vibrate(10);
+    else click();
+    flash(el);
+  };
 })();
 
-/* ===== パッド割当（1タップ=1回だけ処理） ===== */
-const pressLock = new WeakSet();
+const pressLock=new WeakSet();
 function bindPadButton(b){
-  const act=b.dataset.act, val=b.dataset.val;
-
-  const onDown = (e) => {
-    e.preventDefault(); e.stopPropagation();
-    if (pressLock.has(b)) return;      // 二重発火・連打防止
+  const act=b.dataset.act,val=b.dataset.val;
+  const onDown=e=>{
+    e.preventDefault();e.stopPropagation();
+    if(pressLock.has(b))return;
     pressLock.add(b);
-
-    feedback(b);                       // 押下フィードバック
-
+    feedback(b);
     if(act){
-      if(act==='up') move(0,-1);
+      if(act==='up')   move(0,-1);
       if(act==='down') move(0, 1);
       if(act==='left') move(-1,0);
-      if(act==='right') move( 1,0);
-      if(act==='bs') bs();
-      if(act==='tab') tab();
-      if(act==='enter') enter();
+      if(act==='right')move( 1,0);
+      if(act==='bs')   bs();
+      if(act==='tab')  tab();
+      if(act==='enter')enter();
     }else if(val){
       put(val);
     }
   };
-  const onUp = () => { pressLock.delete(b); };
-
-  b.addEventListener('pointerdown', onDown, {passive:false});
-  b.addEventListener('pointerup', onUp);
-  b.addEventListener('pointercancel', onUp);
-  // 互換click無効化（iOSの二重発火を確実に止める）
-  b.addEventListener('click', (e)=>e.preventDefault(), {passive:false});
+  const onUp=()=>pressLock.delete(b);
+  b.addEventListener('pointerdown',onDown,{passive:false});
+  b.addEventListener('pointerup',onUp);
+  b.addEventListener('pointercancel',onUp);
+  b.addEventListener('click',e=>e.preventDefault(),{passive:false});
 }
 
-/* ===== クリック選択 & パッド登録 ===== */
+/* セルクリック＆パッド登録 */
 document.querySelectorAll('td.cell').forEach(td=>{
-  td.addEventListener('pointerdown',()=>focusCell(parseInt(td.dataset.r,10),parseInt(td.dataset.c,10)));
+  td.addEventListener('pointerdown',()=>{
+    focusCell(parseInt(td.dataset.r,10),parseInt(td.dataset.c,10));
+  });
 });
 document.querySelectorAll('.pad button').forEach(bindPadButton);
 
-/* ===== モーダル ===== */
-function openModal(m){m.style.display='flex';}function closeModal(m){m.style.display='none';}
-saveBtn.onclick=()=>openModal(saveModal); resetBtn.onclick=()=>openModal(resetModal);
-saveNo.onclick =()=>closeModal(saveModal); resetNo.onclick =()=>closeModal(resetModal);
-saveYes.onclick=()=>{saveValues();closeModal(saveModal);};
-resetYes.onclick=()=>{for(let r=0;r<R;r++)for(let c=0;c<C;c++)getCell(r,c).textContent="";calc();saveValues();closeModal(resetModal);};
+/* ===== モーダル共通 ===== */
+function openModal(m){m.style.display='flex';}
+function closeModal(m){m.style.display='none';}
+
+/* リセットモーダル */
+const resetModal=el('#resetModal');
+el('#resetBtn').onclick=()=>openModal(resetModal);
+el('#resetNo').onclick =()=>closeModal(resetModal);
+el('#resetYes').onclick=()=>{
+  for(let r=0;r<R;r++)for(let c=0;c<C;c++)getCell(r,c).textContent="";
+  calc();
+  saveValues();
+  closeModal(resetModal);
+};
 
 /* ===== 設定モーダル ===== */
-const settingModal=document.getElementById('settingModal');
-document.getElementById('settingBtn').onclick=()=>{
-  const form=document.getElementById('settingForm'); form.innerHTML="";
+const settingModal=el('#settingModal');
+el('#settingBtn').onclick=()=>{
+  const form=el('#settingForm');
+  form.innerHTML="";
   for(let i=0;i<C;i++){
     form.insertAdjacentHTML('beforeend',`
       <div style="border-top:1px solid #ccc;margin-top:8px;padding-top:8px">
@@ -307,20 +544,85 @@ document.getElementById('settingBtn').onclick=()=>{
   }
   openModal(settingModal);
 };
-document.getElementById('settingCancel').onclick=()=>closeModal(settingModal);
-document.getElementById('settingSave').onclick=()=>{
+el('#settingCancel').onclick=()=>closeModal(settingModal);
+el('#settingSave').onclick=()=>{
   for(let i=0;i<C;i++){
-    settings.headers[i]=document.getElementById(`hdr${i}`).value||`列${i+1}`;
-    const v=document.getElementById(`dec${i}`).value; settings.decimals[i]=(v==="null"?null:Number(v));
-    settings.limits[i]=parseFloat(document.getElementById(`lim${i}`).value)||0;
+    settings.headers[i]=el(`#hdr${i}`).value||`列${i+1}`;
+    const v=el(`#dec${i}`).value;
+    settings.decimals[i]=(v==="null"?null:Number(v));
+    settings.limits[i]=parseFloat(el(`#lim${i}`).value)||0;
   }
-  saveSettings(); updateHeaders(); calc(); closeModal(settingModal);
+  saveSettings();
+  updateHeaders();
+  calc();
+  closeModal(settingModal);
 };
 
-/* ===== 初期化 ===== */
-loadValues(); updateHeaders(); focusCell(0,0);
+/* ===== JSONバックアップ／復元 ===== */
+function exportJson(){
+  try{
+    const backup={
+      type:"mgmt-chart-backup",
+      version:BACKUP_VERSION,
+      created:new Date().toISOString(),
+      settings:settings,
+      values:getMatrix()
+    };
+    const json=JSON.stringify(backup,null,2);
+    const blob=new Blob([json],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download="mgmt_chart_backup.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }catch(e){
+    console.log("exportJson error:",e);
+    alert("JSONの保存に失敗しました。");
+  }
+}
+function importJsonFile(file){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.settings){
+        settings=Object.assign({},settings,data.settings);
+        saveSettings();
+        updateHeaders();
+      }
+      if(data.values){
+        setMatrix(data.values);
+        saveValues();
+      }
+      calc();
+      alert("JSONから復元しました。");
+    }catch(err){
+      console.log("importJson error:",err);
+      alert("JSONの読み込みに失敗しました。");
+    }
+  };
+  reader.readAsText(file);
+}
+el('#exportJsonBtn').addEventListener('click',exportJson);
+el('#importJsonBtn').addEventListener('click',()=>{
+  el('#jsonFileInput').click();
+});
+el('#jsonFileInput').addEventListener('change',e=>{
+  const file=e.target.files[0];
+  if(!file){e.target.value="";return;}
+  importJsonFile(file);
+  e.target.value="";
+});
 
-/* PWA（相対パスで） */
+/* ===== 初期化 ===== */
+loadValues();
+updateHeaders();
+focusCell(0,0);
+
+/* PWA用SW登録（相対パス） */
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 }
